@@ -1,19 +1,27 @@
-// src/components/Navbar.js
+
 import React from 'react';
 import { Link } from 'react-router-dom';
-
+import { Box, Flex, Text, Button } from '@chakra-ui/react'; 
 const Navbar = () => {
   return (
-    <nav className="bg-blue-600 p-4 shadow-md">
-      <div className="container mx-auto flex justify-between items-center">
-        <div className="text-white text-lg font-bold">Adziz Store</div>
-        <ul className="flex space-x-6">
-          <li><Link to="/" className="text-white hover:text-gray-200">Home</Link></li>
-          <li><Link to="/products" className="text-white hover:text-gray-200">Products</Link></li>
-          <li><Link to="/about" className="text-white hover:text-gray-200">About Us</Link></li>
-        </ul>
-      </div>
-    </nav>
+    <Flex as="nav" bg="teal.500" color="white" p={4} justify="space-between" align="center">
+      <Box>
+        <Text fontSize="xl" fontWeight="bold">
+          <Link to="/">Adziz Store</Link>
+        </Text>
+      </Box>
+      <Flex>
+        <Button variant="link" color="white" mx={2}>
+          <Link to="/">Home</Link>
+        </Button>
+        <Button variant="link" color="white" mx={2}>
+          <Link to="/products">Products</Link>
+        </Button>
+        <Button variant="link" color="white" mx={2}>
+          <Link to="/about">About Us</Link>
+        </Button>
+      </Flex>
+    </Flex>
   );
 };
 

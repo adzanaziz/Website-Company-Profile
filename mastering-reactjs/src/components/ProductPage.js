@@ -1,33 +1,72 @@
 // src/components/ProductPage.js
-import React, { useEffect, useState } from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { fetchProducts } from '../redux/actions/productActions';
+import { Box, Spinner, Text } from '@chakra-ui/react'; // Menggunakan Chakra UI untuk styling
 
-const ProductPage = () => {
-  const [products, setProducts] = useState([]);
+class ProductPage extends Component {
+  componentDidMount() {
+    this.props.fetchProducts();
+  }
 
-  useEffect(() => {
-    fetch('https://fakestoreapi.com/products')
-      .then(res => res.json())
-      .then(data => setProducts(data))
-      .catch(err => console.error(err));
-  }, []);
+  render() {
+    const { products, loading } = this.props;
 
-  return (
-    <div className="container mx-auto py-16 px-8">
-      <h2 className="text-4xl font-bold text-blue-600 mb-8">Our Products</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {products.map(product => (
-          <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-            <img src={product.image} alt={product.title} className="w-full h-64 object-cover" />
-            <div className="p-4">
-              <h3 className="text-xl font-semibold text-gray-800">{product.title}</h3>
-              <p className="text-gray-600">${product.price}</p>
-              <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Buy Now</button>
+    if (loading) {
+      return (
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          minH="100vh"
+          bgGradient="linear(to-r, teal.400, blue.500)"
+        >
+          <Box textAlign="center" color="white">
+            <Spinner
+              size="xl"
+              thickness="4px"
+              speed="0.65s"
+              emptyColor="gray.200"
+              mb={4}
+            />
+            <Text fontSize="xl" fontWeight="bold">
+              Loading Products...
+            </Text>
+          </Box>
+        </Box>
+      );
+    }
+
+    return (
+      <div className="p-8">
+        <h2 className="text-2xl font-bold mb-4">Our Products</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {products.map((product) => (
+            <div key={product.id} className="border border-gray-300 rounded-lg overflow-hidden">
+              <img 
+                src={product.image} 
+                alt={product.name} 
+                className="w-full h-48 object-cover" 
+              />
+              <div className="p-4">
+                <h3 className="font-bold text-lg">{product.name}</h3>
+                <p className="mt-2">${product.price}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+}
+
+const mapStateToProps = (state) => ({
+  products: state.products.items,
+  loading: state.products.loading,
+});
+
+const mapDispatchToProps = {
+  fetchProducts,
 };
 
-export default ProductPage;
+export default connect(mapStateToProps, mapDispatchToProps)(ProductPage);
